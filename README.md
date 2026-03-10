@@ -107,3 +107,5 @@ default.replication.factor=3
 ## minimun insync replicas
 min.insync.replicas=2
 ```
+
+To download - https://archive.apache.org/dist/kafka/3.7.2/kafka_2.12-3.7.2.tgz
