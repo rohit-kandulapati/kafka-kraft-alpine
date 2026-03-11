@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-sts 
+  namespace: default
+spec:
+  serviceName: kafka-kraft-headless
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka 
+    spec:
+      image: rohitkalyan18/kafka-kraft-alpine:v1
+      ports:
+      - name: controller
+        containerPort: 9093
+      - name: plaintext 
+        containerPort: 9092
+      env:
+      - name: DEPLOYMENT_MODE
+        value: "cluster"
+      - name: KAFKA_CLUSTER_ID
+        value: "kafka-kraft-kubernetes-alerewljklwrljasf"
+      - name: KAFKA_REPLICAS
+        value: "3"
+      - name: KAFKA_SERVICE_NAME
+        value: kafka-kraft-headless
+      - name: KAFKA_NAMESPACE
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.namespace 
+      - name: KAFKA_HOME
+        value: "/opt/kafka"
+      - name: KAFKA_LOG_DIRS
+        value: "var/kafka-logs"
+      - name: KAFKA_HEAP_OPTS
+        value: "-Xmx1G -Xms1G"
+      - name: KAFKA_LOG_LEVEL
+        value: "INFO"
+  volumeClaimTemplates:
+  - metadata:
+    name: kafka-kraft-vol 
+    spec:
+      accessModes:
+      - RWO
+      storageClassName: "standard"
+      resources:
+        requests:
+          storage: 500Mi
